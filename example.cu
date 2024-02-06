@@ -1,14 +1,13 @@
 #include "tensor-enum.cuh"
-
+#define SEED 1234
 
 int main(){
-    Tensor<float> a = {NULL, {2, 3, 4}};
-    Tensor<float> b = {NULL, {2, 3, 4}}; 
+    Tensor<float32> a = {NULL, {3, 1024, 1024}};
+    Tensor<float32> b = {NULL, {3, 1024, 1024}}; 
 
-    cudaMalloc(&a.data, get_size(a.shape) * sizeof(float));
-    cudaMalloc(&b.data, get_size(b.shape) * sizeof(float));
+    generateUniform<float32>(&a.data, get_size(a.shape), SEED, -5.0, 5.0);
 
-
+    generateNormal<float32>(&b.data, get_size(b.shape), SEED, 0, 2);
 
     cudaFree(a.data);
     cudaFree(b.data);

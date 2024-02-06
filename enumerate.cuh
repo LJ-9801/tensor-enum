@@ -5,6 +5,7 @@
 
 template <typename T>
 __global__ void _fill(T *output, T value, size_t size){
+
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
     if(idx < size){
         output[idx] = value;
