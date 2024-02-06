@@ -14,8 +14,6 @@ int main(){
     generateUniform<float32>(&a.data, get_size(a.shape), SEED, -5.0, 5.0);
     generateNormal<float32>(&b.data, get_size(b.shape), SEED, 0, 2);
 
-    cudaFree(a.data);
-    cudaFree(b.data);
     return 0;
 }
 ```
