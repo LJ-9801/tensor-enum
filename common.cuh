@@ -21,6 +21,12 @@ typedef cuDoubleComplex complex64;
 
 typedef std::vector<size_t> shape_t;
 
+
+/**
+ * @brief get_size
+ * @param shape
+ * @return the size of the tensor
+*/
 #define get_size(shape) std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>())
 
 
