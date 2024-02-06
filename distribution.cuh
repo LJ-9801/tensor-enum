@@ -133,7 +133,7 @@ void generateMultiUniform(T **data, size_t size, unsigned long long seed, T *low
     setup_random_generator(&stream, &devStates, data, size);
     int blocks = (size + CURAND_MAX_THREADS - 1) / CURAND_MAX_THREADS;
     setup_curandState<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, seed);
-    generate_multi_uniform_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, low, high, *data);
+    generate_multi_uniform_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, lows, highs, *data);
     finish_random_generator(&stream, &devStates);
 
 }
@@ -173,7 +173,7 @@ void generateMultiNormal(T **data, size_t size, unsigned long long seed, T *mean
     setup_random_generator(&stream, &devStates, data, size);
     int blocks = (size + CURAND_MAX_THREADS - 1) / CURAND_MAX_THREADS;
     setup_curandState<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, seed);
-    generate_multi_normal_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, mean, stddev, *data);
+    generate_multi_normal_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, means, stddevs, *data);
     finish_random_generator(&stream, &devStates);
 }
 #endif // DISTRIBUTION_H

@@ -9,7 +9,5 @@ int main(){
 
     generateNormal<float32>(&b.data, get_size(b.shape), SEED, 0, 2);
 
-    cudaFree(a.data);
-    cudaFree(b.data);
     return 0;
 }

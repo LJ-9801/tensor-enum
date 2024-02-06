@@ -18,29 +18,7 @@ typedef u_int8_t uint8;
 typedef cuFloatComplex complex32;
 typedef cuDoubleComplex complex64;
 
-
 typedef std::vector<size_t> shape_t;
-
-
-/**
- * @brief get_size
- * @param shape
- * @return the size of the tensor
-*/
-#define get_size(shape) std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>())
-
-
-/**
- * @brief Tensor struct
- * a simple strunt for letting
- * the user define a tensor with
- * a shape and a data pointer
-*/
-template <typename T>
-struct Tensor{
-    T* data;
-    shape_t shape;
-};
 
 
 #define CHECK_CURAND(call) \
@@ -60,5 +38,32 @@ do { \
         exit(EXIT_FAILURE); \
     } \
 } while (0)
+
+/**
+ * @brief get_size
+ * @param shape
+ * @return the size of the tensor
+*/
+#define get_size(shape) std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>())
+
+
+/**
+ * @brief Tensor struct
+ * a simple strunt for letting
+ * the user define a tensor with
+ * a shape and a data pointer
+*/
+template <typename T>
+struct Tensor{
+    T* data;
+    shape_t shape;
+
+    ~Tensor(){
+        if(data != nullptr){
+            printf("Freeing data\n");
+            CHECK_CUDA(cudaFree(data));
+        }
+    }
+};
 
 #endif // DTYPE_H
