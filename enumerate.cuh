@@ -2,6 +2,7 @@
 #define ENUMERATE_H
 #include "distribution.cuh"
 
+#define THREADS_PER_BLOCK 1024
 
 template <typename T>
 __global__ void _fill(T *output, T value, size_t size){

@@ -1,5 +1,6 @@
 #include "common.cuh"
 #include "distribution.cuh"
+#include "enumerate.cuh"
 
 
 /**
@@ -78,4 +79,59 @@ void generateMultiNormal(T **data, size_t size, unsigned long long seed, T *mean
     setup_curandState<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, seed);
     generate_multi_normal_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, means, stddevs, *data);
     finish_random_generator(&stream, &devStates);
+}
+
+template <typename T>
+void fill(T **data, T value, size_t size){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    cudaMallocAsync(data, size * sizeof(T), stream);
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, value, size);
+    cudaStreamSynchronize(stream);
+    cudaStreamDestroy(stream);
+}
+
+template <typename T>
+void ones(T **data, size_t size){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    cudaMallocAsync(data, size * sizeof(T), stream);
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, 1, size);
+    cudaStreamSynchronize(stream);
+    cudaStreamDestroy(stream);
+}
+
+template <typename T>
+void zeros(T **data, size_t size){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    cudaMallocAsync(data, size * sizeof(T), stream);
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, 0, size);
+    cudaStreamSynchronize(stream);
+    cudaStreamDestroy(stream);
+}
+
+template <typename T>
+void arange(T **data, T start, T step, size_t size){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    cudaMallocAsync(data, size * sizeof(T), stream);
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _arange<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, step, size);
+    cudaStreamSynchronize(stream);
+    cudaStreamDestroy(stream);
+}
+
+template <typename T>
+void linspace(T **data, T start, T end, size_t size){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    cudaMallocAsync(data, size * sizeof(T), stream);
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _linspace<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, end, size);
+    cudaStreamSynchronize(stream);
+    cudaStreamDestroy(stream);
 }
