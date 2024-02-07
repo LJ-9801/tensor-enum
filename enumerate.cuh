@@ -28,4 +28,15 @@ __global__ void _linspace(T *output, T start, T stop, size_t size){
         output[idx] = start + idx * (stop - start) / (size - 1);
     }
 }
+
+template <typename T>
+inline void setup_fill_generator(cudaStream_t *stream, T **data, size_t size){
+    CHECK_CUDA(cudaStreamCreate(stream));
+    CHECK_CUDA(cudaMallocAsync(data, size * sizeof(T), *stream));
+}
+
+inline void finish_fill_generator(cudaStream_t *stream){
+    CHECK_CUDA(cudaStreamSynchronize(*stream));
+    CHECK_CUDA(cudaStreamDestroy(*stream));
+}
 #endif // KERNELS_H

@@ -85,53 +85,48 @@ template <typename T>
 void fill(T **data, T value, size_t size){
     assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream;
-    cudaMallocAsync(data, size * sizeof(T), stream);
+    setup_fill_generator(&stream, data, size); 
     int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
     _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, value, size);
-    cudaStreamSynchronize(stream);
-    cudaStreamDestroy(stream);
+    finish_fill_generator(&stream); 
 }
 
 template <typename T>
 void ones(T **data, size_t size){
     assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream;
-    cudaMallocAsync(data, size * sizeof(T), stream);
+    setup_fill_generator(&stream, data, size); 
     int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
     _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, 1, size);
-    cudaStreamSynchronize(stream);
-    cudaStreamDestroy(stream);
+    finish_fill_generator(&stream);
 }
 
 template <typename T>
 void zeros(T **data, size_t size){
     assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream;
-    cudaMallocAsync(data, size * sizeof(T), stream);
+    setup_fill_generator(&stream, data, size); 
     int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
     _fill<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, 0, size);
-    cudaStreamSynchronize(stream);
-    cudaStreamDestroy(stream);
+    finish_fill_generator(&stream);
 }
 
 template <typename T>
 void arange(T **data, T start, T step, size_t size){
     assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream;
-    cudaMallocAsync(data, size * sizeof(T), stream);
+    setup_fill_generator(&stream, data, size);
     int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
     _arange<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, step, size);
-    cudaStreamSynchronize(stream);
-    cudaStreamDestroy(stream);
+    finish_fill_generator(&stream);
 }
 
 template <typename T>
 void linspace(T **data, T start, T end, size_t size){
     assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream;
-    cudaMallocAsync(data, size * sizeof(T), stream);
+    setup_fill_generator(&stream, data, size); 
     int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
     _linspace<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, end, size);
-    cudaStreamSynchronize(stream);
-    cudaStreamDestroy(stream);
+    finish_fill_generator(&stream);
 }
