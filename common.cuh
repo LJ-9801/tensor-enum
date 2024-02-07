@@ -49,7 +49,7 @@ do { \
 
 /**
  * @brief Tensor struct
- * a simple strunt for letting
+ * a simple struct for letting
  * the user define a tensor with
  * a shape and a data pointer
 */
@@ -60,7 +60,6 @@ struct Tensor{
 
     ~Tensor(){
         if(data != nullptr){
-            printf("Freeing data\n");
             CHECK_CUDA(cudaFree(data));
         }
     }

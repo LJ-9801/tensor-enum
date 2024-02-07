@@ -1,5 +1,5 @@
 # tensor-enum
-A fast tensor enumeration library in CUDA
+A header only fast tensor enumeration library in CUDA
 
 
 ## Example
