@@ -130,3 +130,24 @@ void linspace(T **data, T start, T end, size_t size){
     _linspace<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, end, size);
     finish_fill_generator(&stream);
 }
+
+template <typename T>
+void logspace(T **data, T start, T end, T step, T base = 10){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    size_t size = (end - start) / step + 1;
+    setup_fill_generator(&stream, data, size); 
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _logspace<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, start, end, step, base);
+    finish_fill_generator(&stream);
+}
+
+template <typename T>
+void eye(T **data, size_t n, size_t m){
+    assert(*data == NULL && "Data should be NULL");
+    cudaStream_t stream;
+    setup_fill_generator(&stream, data, n * m); 
+    int blocks = (n * m + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    _eye<<<blocks, THREADS_PER_BLOCK, 0, stream>>>(*data, n, m);
+    finish_fill_generator(&stream);
+}

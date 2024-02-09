@@ -30,6 +30,29 @@ __global__ void _linspace(T *output, T start, T stop, size_t size){
 }
 
 template <typename T>
+__global__ void _logspace(T *output, T start, T stop, T step, T base){
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    size_t size = (stop - start) / step;
+
+    if(idx < size){
+        output[idx] = pow(base, start + idx * step);
+    }
+}
+
+template <typename T>
+__global__ void _eye(T *output, size_t n, size_t m){
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    /**
+     * @todo: division is very slow
+    */
+    if(idx < n * m){
+        size_t i = idx / m;
+        size_t j = idx % m;
+        output[idx] = i == j ? 1 : 0;
+    }
+}
+
+template <typename T>
 inline void setup_fill_generator(cudaStream_t *stream, T **data, size_t size){
     CHECK_CUDA(cudaStreamCreate(stream));
     CHECK_CUDA(cudaMallocAsync(data, size * sizeof(T), *stream));
