@@ -13,13 +13,31 @@
 */
 template <typename T>
 void generateUniform(T **data, size_t size, unsigned long long seed, T low, T high){
+    assert(*data == NULL && "Data should be NULL");
+    curandState *devStates = NULL;
+    CHECK_CUDA(cudaMalloc((void **)&devStates, size * sizeof(curandState)));
+    CHECK_CUDA(cudaMalloc((void **)data, size * sizeof(T)));
+    int blocks = (size + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    setup_curandState<<<blocks, THREADS_PER_BLOCK>>>(devStates, seed);
+    generate_uniform_kernel<<<blocks, THREADS_PER_BLOCK>>>(devStates, size, low, high, *data);
+    CHECK_CUDA(cudaFree(devStates));
+}
+
+
+// this is failing for some reason
+// curand does not work with cuda streams??
+/*
+template <typename T>
+void generateUniform(T **data, size_t size, unsigned long long seed, T low, T high){
+    assert(*data == NULL && "Data should be NULL");
     cudaStream_t stream; curandState *devStates;
     setup_random_generator(&stream, &devStates, data, size);
     int blocks = (size + CURAND_MAX_THREADS - 1) / CURAND_MAX_THREADS;
     setup_curandState<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, seed);
-    generate_uniform_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, low, high, *data);
-    finish_random_generator(&stream, &devStates); 
+    generate_uniform_kernel<<<blocks, CURAND_MAX_THREADS, 0, stream>>>(devStates, size, low, high, *data); 
+    finish_random_generator(&stream, &devStates);
 }
+*/
 
 
 /**
